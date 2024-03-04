@@ -15,15 +15,11 @@ function AuthLogin() {
   const [telaAdmin, setTelaAdmin] = useState(null);
   const [telaCadastro, setTelaCadastro] = useState(null);
   const [telaRedefinirSenha, setTelaRedefinirSenha] = useState(null);
-  const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState(null);  
 
   async function login(dados) {
     try {
       const resposta = await axios.post("https://fs01backend.onrender.com/auth/login", dados);
-      // const resposta = await axios.post(
-      //   "http://localhost:8080/auth/login",
-      //   dados
-      // );
 
       console.log("Resposta do login:", resposta.data);
       setTelaAdmin(true);
