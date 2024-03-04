@@ -1,15 +1,11 @@
-import { useState } from 'react'
-import './App.css'
-import TelaLogin from './pages/TelaLogin'
+import AuthLogin from "./pages/TelaLogin";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <TelaLogin />
-    </>
-  )
+    <div className="App" id="App">
+      <AuthLogin />
+    </div>
+  );
 }
 
-export default App
+export default App;
