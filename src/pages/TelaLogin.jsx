@@ -1,6 +1,7 @@
 import { Button, Col, Flex, Form, Input, Row } from "antd";
 import FormItem from "antd/es/form/FormItem/index.js";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import axios from "axios";
 
@@ -17,12 +18,15 @@ function AuthLogin() {
   const [telaRedefinirSenha, setTelaRedefinirSenha] = useState(null);
   const [userId, setUserId] = useState(null);  
 
+  const navigate = useNavigate();
+
   async function login(dados) {
     try {
       const resposta = await axios.post("https://fs01backend.onrender.com/auth/login", dados);
 
       console.log("Resposta do login:", resposta.data);
-      setTelaAdmin(true);
+      // setTelaAdmin(true);
+      navigate("/admin/" + resposta.data.id);
       alert("Login Autorizado");
       setUserId(resposta.data.id)
     } catch (error) {
@@ -30,22 +34,24 @@ function AuthLogin() {
     }
   }
 
-  if (telaAdmin) {
-    return <TelaUserAdmin idLogado={userId}/>;
-  }
-  if (telaCadastro) {
-    return <Cadastro />;
-  }
-  if (telaRedefinirSenha) {
-    return <TelaRedefinirSenha />;
-  }
+  // if (telaAdmin) {
+  //   return <TelaUserAdmin idLogado={userId}/>;
+  // }
+  // if (telaCadastro) {
+  //   return <Cadastro />;
+  // }
+  // if (telaRedefinirSenha) {
+  //   return <TelaRedefinirSenha />;
+  // }
 
   function RedefinirSenha() {
-    setTelaRedefinirSenha(true);
+    // setTelaRedefinirSenha(true);
+    navigate("/redefinirsenha");
   }
 
   function TelaCadastro() {
-    setTelaCadastro(true);
+    // setTelaCadastro(true);
+    navigate("/cadastro");
   }
 
   return (

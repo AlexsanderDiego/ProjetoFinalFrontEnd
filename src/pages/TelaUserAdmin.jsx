@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { Table, Space, Button, Modal, Form, Input, message } from "antd";
 
-const TelaUserAdmin = ({ idLogado }) => {
+const TelaUserAdmin = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [editandoUsuario, setEditandoUsuario] = useState({});
   const [form] = Form.useForm();
+  const idLogado = window.location.pathname.split("/")[2];
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -144,6 +147,13 @@ const TelaUserAdmin = ({ idLogado }) => {
       <div style={{ width: "80%", margin: "auto", marginTop: "50px" }}>
         <h2>Detalhes do usuário</h2>
         <Table dataSource={usuarios} columns={columns} />
+        <Button
+        className="register-button"
+        type="danger"
+        onClick={() => navigate("/")}
+      >
+        Sair
+      </Button>
 
         <Modal
           title="Editar Usuário"
