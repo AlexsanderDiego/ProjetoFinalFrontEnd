@@ -1,28 +1,27 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Table, Space, Button, Modal, Form, Input, message } from "antd";
 
 const TelaUserPerfil = () => {
     const navigate = useNavigate();
-    const [usuarios, setUsuarios] = useState([]);
-    const user = window.location.pathname.split("/")[1];
-    const idLogado = user;
-    // puxar nome do usuario logado no backend
+
+    const { user } = useParams();
 
     useEffect(() => {
     const fetchUserId = async () => {
       try {
         const response = await axios.get(
-            `https://fs01backend.onrender.com/usuarios/${idLogado}`
+            `https://fs01backend.onrender.com/usuarios/usuario/${user}`
         );
         
-        // const newItems = [response.data];
-        // setUsuarios(newItems);
+        const newItems = [response.data];
+        setUsuarios(newItems);
         console.log(response.data);
 
       } catch (error) {
-        console.error("Erro ao obter ID do usuário logado:", error);
+        console.error("Erro ao obter Nome do usuário logado:", error);
+        console.log(user)
         
         message.error(
           "Erro ao obter ID do usuário logado. Por favor, tente novamente."
@@ -33,16 +32,60 @@ const TelaUserPerfil = () => {
     fetchUserId();
   }, []);
 
+  const columns = [
+    {
+      title: "Nome",
+      dataIndex: "nome",
+      key: "nome",
+    },
+    {
+      title: "Usuário",
+      dataIndex: "usuario",
+      key: "usuario",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "Links",
+      dataIndex: "links",
+      key: "links",
+      render: (text, record) => (
+        <Space size="middle">
+          <Link to={`/usuarios/usuario/${record.usuario}`}>
+          <Button
+            type="primary"
+          >
+            Cadastrar Link
+          </Button>
+          </Link>
+        </Space>
+      ),
+    },
+  ];
+
+  const [usuarios, setUsuarios] = useState([]);
+  console.log(usuarios);
+  
+
   return (
     <>
     <div>
         <h2>
-            Perfil do Usuário
-
+            Perfil do Usuário {user}
         </h2>
     </div>
     <div>
-      TelaUserPerfil
+      <Table
+        columns={columns}
+        dataSource={usuarios}
+        pagination={false}
+        rowKey="id"
+      />
+    </div>
+    <div>
       <Button
         className="register-button"
         type="danger"
