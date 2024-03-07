@@ -1,38 +1,36 @@
-import React, { useState } from "react";
+import { Button, Col, Flex, Form, Input, Row } from "antd";
 import axios from "axios";
-import { Form, Input, Button, Row, Col, Flex } from "antd";
-import AuthLogin from "./TelaLogin.jsx";
+import React from "react";
 
+import { Link, useNavigate } from "react-router-dom";
 import "../css/TelaCadastro.css";
 
 function Cadastro() {
-  const [irLogin, setIrLogin] = useState(null);
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   async function handleSubmit(dados) {
     try {
-      const resposta = await axios.post("https://fs01backend.onrender.com/cadastrarusuarios", dados);
-    
+      await axios.post(
+        "https://fs01backend.onrender.com/cadastrarusuarios",
+        dados
+      );
+
       alert("Usuario Cadastrado");
 
-      // limpar campos do formulario apos cadastro e perguntar se deseja cadastrar novo usuario ou voltar para tela de login  
+      // limpar campos do formulario apos cadastro e perguntar se deseja cadastrar novo usuario ou voltar para tela de login
       const confirma = confirm("Deseja cadastrar novo usuário?");
       if (confirma) {
-        setIrLogin(false);
         // limpar campos
         form.resetFields();
       } else {
-        setIrLogin(true);
+        navigate("/");
+        
       }
-
     } catch (error) {
       console.error("Erro na requisição:", error);
       alert("Erro ao cadastrar usuario. Por favor, tente novamente.");
     }
-  }
-
-  if (irLogin) {
-    return <AuthLogin />;
   }
 
   return (
@@ -101,13 +99,11 @@ function Cadastro() {
                 </Button>
               </Form.Item>
               <Form.Item>
-                <Button
-                  className="register-button"
-                  type="danger"
-                  onClick={() => setIrLogin(true)}
-                >
-                  Voltar
-                </Button>
+                <Link to="/">
+                  <Button className="register-button" type="danger">
+                    Voltar
+                  </Button>
+                </Link>
               </Form.Item>
             </Col>
           </Row>
