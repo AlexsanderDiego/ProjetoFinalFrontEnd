@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Table, Space, Button, Modal, Form, Input, message } from "antd";
 
 const TelaUserAdmin = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible1, setModalVisible1] = useState(false);
   const [editandoUsuario, setEditandoUsuario] = useState({});
   const [form] = Form.useForm();
-  const idLogado = window.location.pathname.split("/")[2];
   const navigate = useNavigate();
+  const idUser = useParams();
 
   useEffect(() => {
     const fetchUserId = async () => {
       try {
         const response = await axios.get(
-          `https://fs01backend.onrender.com/usuarios/${idLogado}`
+          `https://fs01backend.onrender.com/usuarios/${idUser.id}`
         );
         const usu = {
           id: response.data.id,
@@ -26,7 +27,7 @@ const TelaUserAdmin = () => {
         };
         const newItems = [usu];
         setUsuarios(newItems);
-
+        
       } catch (error) {
         console.error("Erro ao obter ID do usuário logado:", error);
         message.error(
@@ -70,6 +71,9 @@ const TelaUserAdmin = () => {
           <Button type="danger" onClick={() => handleExcluir(record.id)}>
             Excluir
           </Button>
+          <Button type="primary" onClick={() => setModalVisible1(true)}>
+            Criar Link
+          </Button>
         </Space>
       ),
     },
@@ -91,7 +95,7 @@ const TelaUserAdmin = () => {
 
         // Atualiza a lista de usuários após a exclusão
         const response = await axios.get(
-          `https://fs01backend.onrender.com/usuarios/${idLogado}`
+          `https://fs01backend.onrender.com/usuarios/${idUser.id}`
         );
         // implementar a atualização da lista de usuários
       } catch (error) {
@@ -117,7 +121,7 @@ const TelaUserAdmin = () => {
 
             // Atualiza a lista de usuários após a edição
             const response = await axios.get(
-              `https://fs01backend.onrender.com/usuarios/${idLogado}`
+              `https://fs01backend.onrender.com/usuarios/${idUser.id}`
             );
             // implementar a atualização da lista de usuários
           } catch (error) {
@@ -142,18 +146,83 @@ const TelaUserAdmin = () => {
     setModalVisible(false);
   };
 
+  const handleCriarLink = () => {
+    form
+      .validateFields()
+      .then((values) => {
+        const criarLink = async () => {
+          try {
+            // const resposta = await axios.post(
+            //   `https://fs01backend.onrender.com/usuarios/${idUser.id}/links`,
+            //   values
+            // );
+            
+            alert("Link criado com sucesso");
+
+            // Atualiza a lista de usuários após a criação do link
+            // const response = await axios.get(
+            //   `https://fs01backend.onrender.com/usuarios/${idUser.id}`
+            // );
+            // implementar a atualização da lista de usuários
+          } catch (error) {
+            console.error("Erro na requisição:", error);
+
+            alert("Erro ao criar link. Por favor, tente novamente.");
+          }
+
+          setModalVisible1(false);
+          message.success("Link criado com sucesso!");
+        };
+        criarLink();
+      })
+      .catch((error) => {
+        console.error("Erro ao validar campos do formulário:", error);
+      });
+  }
+
+  const handleCancelarCriarLink = () => {
+    setModalVisible1(false);
+  };
+  
   return (
     <>
       <div style={{ width: "80%", margin: "auto", marginTop: "50px" }}>
         <h2>Detalhes do usuário</h2>
-        <Table dataSource={usuarios} columns={columns} />
+        <Table dataSource={usuarios} columns={columns} rowKey="id" pagination={false}/>
         <Button
-        className="register-button"
-        type="danger"
-        onClick={() => navigate("/")}
-      >
-        Sair
-      </Button>
+          className="register-button"
+          type="danger"
+          onClick={() => navigate("/")}
+        >
+          Sair
+        </Button>
+
+        //Modal para criar links para o usuario
+        <Modal
+          title="Criar Link"
+          open={modalVisible1}
+          onOk={handleCriarLink}
+          onCancel={handleCancelarCriarLink}
+        >
+          <Form form={form} initialValues={""}>
+            <Form.Item
+              name="Título"
+              label="Título"
+              rules={[{ required: true, message: "Por favor, insira o título do link!" }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="URL"
+              label="URL"
+              rules={[
+                { required: true, message: "Por favor, insira a URL!" },
+              ]}
+            >
+              <Input type="URL" />
+            </Form.Item>
+          </Form>
+        </Modal>
 
         <Modal
           title="Editar Usuário"
