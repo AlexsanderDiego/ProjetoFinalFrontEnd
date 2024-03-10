@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Table, Space, Button, Modal, Form, Input, message } from "antd";
 
 const TelaUserAdmin = () => {
@@ -27,7 +27,6 @@ const TelaUserAdmin = () => {
         };
         const newItems = [usu];
         setUsuarios(newItems);
-        
       } catch (error) {
         console.error("Erro ao obter ID do usuário logado:", error);
         message.error(
@@ -74,6 +73,9 @@ const TelaUserAdmin = () => {
           <Button type="primary" onClick={() => setModalVisible1(true)}>
             Criar Link
           </Button>
+          <Link to={"/" + usuarios[0]["usuario"]}>
+            <Button type="primary">Ir Perfil</Button>
+          </Link>
         </Space>
       ),
     },
@@ -156,7 +158,7 @@ const TelaUserAdmin = () => {
             //   `https://fs01backend.onrender.com/usuarios/${idUser.id}/links`,
             //   values
             // );
-            
+
             alert("Link criado com sucesso");
 
             // Atualiza a lista de usuários após a criação do link
@@ -178,17 +180,22 @@ const TelaUserAdmin = () => {
       .catch((error) => {
         console.error("Erro ao validar campos do formulário:", error);
       });
-  }
+  };
 
   const handleCancelarCriarLink = () => {
     setModalVisible1(false);
   };
-  
+
   return (
     <>
       <div style={{ width: "80%", margin: "auto", marginTop: "50px" }}>
         <h2>Detalhes do usuário</h2>
-        <Table dataSource={usuarios} columns={columns} rowKey="id" pagination={false}/>
+        <Table
+          dataSource={usuarios}
+          columns={columns}
+          rowKey="id"
+          pagination={false}
+        />
         <Button
           className="register-button"
           type="danger"
@@ -207,16 +214,19 @@ const TelaUserAdmin = () => {
             <Form.Item
               name="Título"
               label="Título"
-              rules={[{ required: true, message: "Por favor, insira o título do link!" }]}
+              rules={[
+                {
+                  required: true,
+                  message: "Por favor, insira o título do link!",
+                },
+              ]}
             >
               <Input />
             </Form.Item>
             <Form.Item
               name="URL"
               label="URL"
-              rules={[
-                { required: true, message: "Por favor, insira a URL!" },
-              ]}
+              rules={[{ required: true, message: "Por favor, insira a URL!" }]}
             >
               <Input type="URL" />
             </Form.Item>
