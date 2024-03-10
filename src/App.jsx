@@ -12,7 +12,7 @@ function App() {
         <Route path="/" element={<AuthLogin />} />
         <Route path="/admin/:id" element={<TelaUserAdmin />} />
         <Route path="/redefinirsenha" element={<TelaRedefinirSenha />} />
-        <Route path="/usuarios/usuario/:user" element={<TelaUserPerfil />} />
+        <Route path="/:user" element={<TelaUserPerfil />} />
         <Route path="/cadastro" element={<TelaCadastro />} />
       </Routes>
     </div>
