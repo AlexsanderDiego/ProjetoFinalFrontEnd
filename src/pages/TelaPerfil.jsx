@@ -4,32 +4,35 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Table, Space, Button, Modal, Form, Input, message } from "antd";
 
 const TelaUserPerfil = () => {
-    const navigate = useNavigate();
+  
+  const [usuarios, setUsuarios] = useState([]);
 
-    const { user } = useParams();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-    const fetchUserId = async () => {
+  const { user } = useParams();
+
+
+  useEffect(() => {
+    const fetchUser = async () => {
       try {
         const response = await axios.get(
-            `https://fs01backend.onrender.com/${user}`
+          `https://fs01backend.onrender.com/${user}`
         );
-        
+
         const newItems = [response.data];
         setUsuarios(newItems);
         console.log(response.data);
-
       } catch (error) {
         console.error("Erro ao obter Nome do usuário logado:", error);
-        console.log(user)
-        
+        console.log(user);
+
         message.error(
           "Erro ao obter ID do usuário logado. Por favor, tente novamente."
         );
       }
     };
 
-    fetchUserId();
+    fetchUser();
   }, []);
 
   const columns = [
@@ -54,49 +57,38 @@ const TelaUserPerfil = () => {
       key: "links",
       render: (text, record) => (
         <Space size="middle">
-          <Link to={`/usuarios/usuario/${record.usuario}`}>
-          <Button
-            type="primary"
-          >
-            Cadastrar Link
-          </Button>
+          <Link to={`/${record.usuario}`}>
+            <Button type="primary">Cadastrar Link</Button>
           </Link>
         </Space>
       ),
     },
   ];
 
-  const [usuarios, setUsuarios] = useState([]);
-  console.log(usuarios);
-  
-
   return (
     <>
-    <div>
-        <h2>
-            Perfil do Usuário {user}
-        </h2>
-    </div>
-    <div>
-      <Table
-        columns={columns}
-        dataSource={usuarios}
-        pagination={false}
-        rowKey="id"
-      />
-    </div>
-    <div>
-      <Button
-        className="register-button"
-        type="danger"
-        onClick={() => navigate("/")}
-      >
-        Voltar
-      </Button>
-    </div>
+      <div>
+        <h2>Perfil do Usuário {user}</h2>
+      </div>
+      <div>
+        <Table
+          columns={columns}
+          dataSource={usuarios}
+          pagination={false}
+          rowKey="id"
+        />
+      </div>
+      <div>
+        <Button
+          className="register-button"
+          type="danger"
+          onClick={() => navigate("/")}
+        >
+          Voltar
+        </Button>
+      </div>
     </>
-  );    
-
-}
+  );
+};
 
 export default TelaUserPerfil;
