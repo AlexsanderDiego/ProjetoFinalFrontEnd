@@ -12,7 +12,7 @@ const TelaUserPerfil = () => {
     const fetchUserId = async () => {
       try {
         const response = await axios.get(
-            `https://fs01backend.onrender.com/usuarios/usuario/${user}`
+            `https://fs01backend.onrender.com/${user}`
         );
         
         const newItems = [response.data];
