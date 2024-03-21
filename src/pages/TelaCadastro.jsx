@@ -12,7 +12,8 @@ function Cadastro() {
   async function handleSubmit(dados) {
     try {
       await axios.post(
-        "https://fs01backend.onrender.com/cadastrarusuarios",
+        // "https://fs01backend.onrender.com/cadastrarusuarios",
+        `http://localhost:3000/cadastrarusuarios/`,
         dados
       );
 
