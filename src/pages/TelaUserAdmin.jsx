@@ -5,30 +5,40 @@ import { Table, Space, Button, Modal, Form, Input, message } from "antd";
 
 const TelaUserAdmin = () => {
   const [usuarios, setUsuarios] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalVisible1, setModalVisible1] = useState(false);
+  const [link, setLink] = useState([]);
+  const [modalVisibleUser, setModalVisibleUser] = useState(false);
+  const [modalVisibleLink, setModalVisibleLink] = useState(false);
   const [editandoUsuario, setEditandoUsuario] = useState({});
+  const [editandoLink, setEditandoLink] = useState({});
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const idUser = useParams();
-
+  
   useEffect(() => {
     const fetchUserId = async () => {
       try {
-        const response = await axios.get(
-          `https://fs01backend.onrender.com/usuarios/${idUser.id}`
+        const userResponse = await axios.get(
+          `http://localhost:3000/links/${idUser.id}`
         );
-        const usu = {
-          id: response.data.id,
-          nome: response.data.nome,
-          usuario: response.data.usuario,
-          email: response.data.email,
-          links: response.data.links,
+        const linksUserResponse = await axios.get(
+          `http://localhost:3000/links/usuarios/${idUser.id}`
+        );
+        const userDados = {
+          id: userResponse.data.id,
+          nome: userResponse.data.nome,
+          usuario: userResponse.data.usuario,
+          email: userResponse.data.email,
         };
-        const newItems = [usu];
-        setUsuarios(newItems);
+        const linkDados = linksUserResponse.data.map((link) => ({
+          id: link.id,
+          titulo: link.titulo,
+          url: link.url,
+        }));
+        setUsuarios([userDados]);
+        setLink(linkDados);
       } catch (error) {
         console.error("Erro ao obter ID do usuário logado:", error);
+        console.log("deu erro", usuarios);
         message.error(
           "Erro ao obter ID do usuário logado. Por favor, tente novamente."
         );
@@ -38,6 +48,7 @@ const TelaUserAdmin = () => {
     fetchUserId();
   }, []);
 
+  //coluna tabela usuario
   const columns = [
     {
       title: "Nome",
@@ -70,7 +81,7 @@ const TelaUserAdmin = () => {
           <Button type="danger" onClick={() => handleExcluir(record.id)}>
             Excluir
           </Button>
-          <Button type="primary" onClick={() => setModalVisible1(true)}>
+          <Button type="primary" onClick={() => setModalVisibleLink(true)}>
             Criar Link
           </Button>
           <Link to={"/" + usuarios[0]["usuario"]}>
@@ -81,25 +92,47 @@ const TelaUserAdmin = () => {
     },
   ];
 
-  const handleEditar = (usuario) => {
-    setEditandoUsuario(usuario);
-    setModalVisible(true);
-  };
+  //coluna tabela link
+  const columnsLink = [
+    {
+      title: "Titulo",
+      dataIndex: "titulo",
+      key: "titulo",
+    },
+    {
+      title: "Url",
+      dataIndex: "url",
+      key: "url",
+    },
+    {
+      title: "Ações",
+      key: "acoes",
+      render: (text, record) => (
+        <Space size="middle">
+          <Button type="primary" onClick={() => handleEditarLink(record)}>
+            Editar
+          </Button>
+          <Button type="danger" onClick={() => handleExcluirLink(record.id)}>
+            Excluir
+          </Button>
+        </Space>
+      ),
+    },
+  ];
 
+  //excluir usuario
   const handleExcluir = (usuarioId) => {
     const excluirUsuario = async () => {
       try {
-        const resposta = await axios.delete(
-          `https://fs01backend.onrender.com/apagarusuarios/${usuarioId}`
-        );
-        console.log("Resposta do servidor:", resposta.values);
-        alert("Usuario excluido com sucesso");
-
-        // Atualiza a lista de usuários após a exclusão
-        const response = await axios.get(
-          `https://fs01backend.onrender.com/usuarios/${idUser.id}`
-        );
-        // implementar a atualização da lista de usuários
+        const confirma = confirm("Deseja apagar usuário?");
+        if (confirma) {
+          await axios.delete(
+            // `https://fs01backend.onrender.com/apagarusuarios/${usuarioId}`
+            `http://localhost:3000/apagarusuario/${usuarioId}`
+          );
+          alert("Usuario excluido com sucesso");
+          navigate("/");
+        }
       } catch (error) {
         console.error("Erro ao excluir usuário:", error);
         alert("Erro ao excluir usuario. Por favor, tente novamente.");
@@ -108,6 +141,13 @@ const TelaUserAdmin = () => {
     excluirUsuario();
   };
 
+  //editar usuario
+  const handleEditar = (usuario) => {
+    setEditandoUsuario(usuario);
+    setModalVisibleUser(true);
+  };
+
+  //editar usuario
   const handleSalvarEdicao = () => {
     form
       .validateFields()
@@ -115,7 +155,8 @@ const TelaUserAdmin = () => {
         const editaUsuario = async () => {
           try {
             const resposta = await axios.put(
-              `https://fs01backend.onrender.com/usuarios/${editandoUsuario.id}`,
+              // `https://fs01backend.onrender.com/usuarios/${editandoUsuario.id}`,
+              `http://localhost:3000/atualizarusuarios/${editandoUsuario.id}`,
               values
             );
 
@@ -123,9 +164,19 @@ const TelaUserAdmin = () => {
 
             // Atualiza a lista de usuários após a edição
             const response = await axios.get(
-              `https://fs01backend.onrender.com/usuarios/${idUser.id}`
+              // `https://fs01backend.onrender.com/usuarios/${idUser.id}`
+              `http://localhost:3000/usuarios/${idUser.id}`
             );
             // implementar a atualização da lista de usuários
+            const usu = {
+              id: response.data.id,
+              nome: response.data.nome,
+              usuario: response.data.usuario,
+              email: response.data.email,
+              links: response.data.links,
+            };
+            const newItems = [usu];
+            setUsuarios(newItems);
           } catch (error) {
             console.error("Erro na requisição:", error);
 
@@ -134,7 +185,7 @@ const TelaUserAdmin = () => {
             );
           }
 
-          setModalVisible(false);
+          setModalVisibleUser(false);
           message.success("Dado editado com sucesso!");
         };
         editaUsuario();
@@ -144,36 +195,42 @@ const TelaUserAdmin = () => {
       });
   };
 
+  //cancelar edição usuario
   const handleCancelarEdicao = () => {
-    setModalVisible(false);
+    setModalVisibleUser(false);
   };
 
+  //criar link
   const handleCriarLink = () => {
     form
       .validateFields()
       .then((values) => {
         const criarLink = async () => {
           try {
-            // const resposta = await axios.post(
-            //   `https://fs01backend.onrender.com/usuarios/${idUser.id}/links`,
-            //   values
-            // );
+            const resposta = await axios.post(
+              `http://localhost:3000/cadastrarlinks/`,
+              values
+            );
 
             alert("Link criado com sucesso");
 
             // Atualiza a lista de usuários após a criação do link
-            // const response = await axios.get(
-            //   `https://fs01backend.onrender.com/usuarios/${idUser.id}`
-            // );
-            // implementar a atualização da lista de usuários
+            const linksUserResponse = await axios.get(
+              `http://localhost:3000/links/usuarios/${idUser.id}`
+            );
+            const linkDados = linksUserResponse.data.map((link) => ({
+              id: link.id,
+              titulo: link.titulo,
+              url: link.url,
+            }));
+            setLink(linkDados);
           } catch (error) {
             console.error("Erro na requisição:", error);
 
             alert("Erro ao criar link. Por favor, tente novamente.");
           }
 
-          setModalVisible1(false);
-          message.success("Link criado com sucesso!");
+          setModalVisibleLink(false);
         };
         criarLink();
       })
@@ -182,9 +239,99 @@ const TelaUserAdmin = () => {
       });
   };
 
+  //cancelar edição link
   const handleCancelarCriarLink = () => {
-    setModalVisible1(false);
+    setModalVisibleLink(false);
   };
+
+  //excuir link
+  const handleExcluirLink = (linkId) => {
+    const excluirLink = async () => {
+      try {
+        const confirma = confirm("Deseja apagar link?");
+        if (confirma) {
+          await axios.delete(
+            `http://localhost:3000/apagarlink/${linkId}`
+          );
+          alert("Link excluido com sucesso");
+          const linksUserResponse = await axios.get(
+            `http://localhost:3000/links/usuarios/${idUser.id}`
+          );
+          const linkDados = linksUserResponse.data.map((link) => ({
+            id: link.id,
+            titulo: link.titulo,
+            url: link.url,
+          }));
+          setLink(linkDados);
+        }
+      } catch (error) {
+        console.error("Erro ao excluir link:", error);
+        alert("Erro ao excluir link. Por favor, tente novamente.");
+      }
+    };
+    excluirLink();
+  };
+
+  //editar link
+  const handleEditarLink = (link) => {
+    setEditandoLink(link);
+    setModalVisibleLink(true);
+  };
+
+  //editar link
+  const handleSalavarEditarLink = () => {
+    form
+      .validateFields()
+      .then((values) => {
+        const linkId = Number(values.usuariosId);
+        values.usuariosId = linkId;
+        const editarLink = async () => {
+          try {
+            const resposta = await axios.put(
+              `http://localhost:3000/atualizarlink/${editandoLink.id}`,
+              values
+            );
+
+            alert("Link editado com sucesso");
+
+            // Atualiza a lista de usuários após a edição
+            const linksUserResponse = await axios.get(
+              `http://localhost:3000/links/usuarios/${idUser.id}`
+            );
+            const linkDados = linksUserResponse.data.map((link) => ({
+              id: link.id,
+              titulo: link.titulo,
+              url: link.url,
+            }));
+            setLink(linkDados);
+            form.resetFields();
+          } catch (error) {
+            console.error("Erro na requisição:", error);
+
+            alert(
+              "Erro ao editar link. Por favor, tente novamente."
+            );
+          }
+
+          setModalVisibleLink(false);
+          message.success("Link editado com sucesso!");
+        };
+        editarLink();
+      })
+      .catch((error) => {
+        console.error("Erro ao validar campos do formulário:", error);
+      });
+  };
+
+  //cancelar edição link
+  const handleCancelarEditarLink = () => {
+    //limpar formulario
+    form.resetFields();
+    setModalVisibleLink(false);
+  };
+  //
+  // form.setFieldsValue(editandoLink);
+
 
   return (
     <>
@@ -196,6 +343,14 @@ const TelaUserAdmin = () => {
           rowKey="id"
           pagination={false}
         />
+        <h2>Links do usuário</h2>
+        <Table
+          dataSource={link}
+          columns={columnsLink}
+          rowKey="id"
+          pagination={false}
+        />
+        <br />
         <Button
           className="register-button"
           type="danger"
@@ -206,13 +361,13 @@ const TelaUserAdmin = () => {
 
         <Modal
           title="Criar Link"
-          open={modalVisible1}
+          open={modalVisibleLink}
           onOk={handleCriarLink}
           onCancel={handleCancelarCriarLink}
         >
           <Form form={form} initialValues={""}>
             <Form.Item
-              name="Título"
+              name="titulo"
               label="Título"
               rules={[
                 {
@@ -224,18 +379,53 @@ const TelaUserAdmin = () => {
               <Input />
             </Form.Item>
             <Form.Item
-              name="URL"
+              name="url"
               label="URL"
               rules={[{ required: true, message: "Por favor, insira a URL!" }]}
             >
               <Input type="URL" />
+            </Form.Item>
+            <Form.Item name="usuariosId" label="Usuarios Id" initialValue={idUser.id}>
+              <Input readOnly />
+            </Form.Item>
+          </Form>
+        </Modal>
+
+        <Modal
+          title="Editar Link"
+          open={modalVisibleLink}
+          onOk={handleSalavarEditarLink}
+          onCancel={handleCancelarEditarLink}
+        >
+          <Form form={form} initialValues={editandoLink}>
+            <Form.Item
+              name="titulo"
+              label="Título"
+              rules={[
+                {
+                  required: true,
+                  message: "Por favor, insira o título do link!",
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="url"
+              label="URL"
+              rules={[{ required: true, message: "Por favor, insira a URL!" }]}
+            >
+              <Input type="URL" />
+            </Form.Item>
+            <Form.Item name="usuariosId" label="Usuarios Id">
+              <Input readOnly />
             </Form.Item>
           </Form>
         </Modal>
 
         <Modal
           title="Editar Usuário"
-          open={modalVisible}
+          open={modalVisibleUser}
           onOk={handleSalvarEdicao}
           onCancel={handleCancelarEdicao}
         >
