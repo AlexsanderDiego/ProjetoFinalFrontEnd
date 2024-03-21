@@ -4,30 +4,37 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Table, Space, Button, Modal, Form, Input, message } from "antd";
 
 const TelaUserPerfil = () => {
-  
   const [usuarios, setUsuarios] = useState([]);
+  const [link, setLink] = useState([{}]);
 
   const navigate = useNavigate();
 
   const { user } = useParams();
 
-
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await axios.get(
-          `https://fs01backend.onrender.com/${user}`
+          // `https://fs01backend.onrender.com/${user}`
+          `http://localhost:3000/links/${user}`
         );
 
+        const respostaLink = await axios.get(
+          // `https://fs01backend.onrender.com/${user}`
+          `http://localhost:3000/links/usuarios/${response.data.id}`
+        );
+
+        console.log(respostaLink.data);
+        const newLink = [respostaLink.data];
+        setLink(newLink);
+        console.log('sss', link[0]);
         const newItems = [response.data];
         setUsuarios(newItems);
-        console.log(response.data);
       } catch (error) {
-        console.error("Erro ao obter Nome do usuário logado:", error);
-        console.log(user);
+        console.error("Erro ao obter Nome do usuário.", error);
 
         message.error(
-          "Erro ao obter ID do usuário logado. Por favor, tente novamente."
+          "Erro ao obter Nome do usuário. Por favor, tente novamente."
         );
       }
     };
@@ -52,13 +59,36 @@ const TelaUserPerfil = () => {
       key: "email",
     },
     {
-      title: "Links",
-      dataIndex: "links",
-      key: "links",
+      title: "Botão",
+      key: "botao",
       render: (text, record) => (
         <Space size="middle">
           <Link to={`/${record.usuario}`}>
             <Button type="primary">Cadastrar Link</Button>
+          </Link>
+        </Space>
+      ),
+    },
+  ];
+
+  const columnsLink = [
+    {
+      title: "Link",
+      dataIndex: "url",
+      key: "link",
+    },
+    {
+      title: "Titulo",
+      dataIndex: "titulo",
+      key: "titulo",
+    },
+    {
+      title: "Botão",
+      key: "botao",
+      render: (text, record) => (
+        <Space size="middle">
+          <Link to={`/${record.usuario}`}>
+            <Button type="primary">Editar</Button>
           </Link>
         </Space>
       ),
@@ -74,6 +104,14 @@ const TelaUserPerfil = () => {
         <Table
           columns={columns}
           dataSource={usuarios}
+          pagination={false}
+          rowKey="id"
+        />
+      </div>
+      <div>
+        <Table
+          columns={columnsLink}
+          dataSource={link[0]}
           pagination={false}
           rowKey="id"
         />

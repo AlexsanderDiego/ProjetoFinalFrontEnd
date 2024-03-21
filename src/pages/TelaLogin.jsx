@@ -13,7 +13,9 @@ function AuthLogin() {
 
   async function login(dados) {
     try {
-      const resposta = await axios.post("https://fs01backend.onrender.com/auth/login", dados);
+      // const resposta = await axios.post("https://fs01backend.onrender.com/auth/login", dados);
+      // const resposta = await axios.post("https://projetofinalbackend-4c4c.onrender.com/auth/login", dados);
+      const resposta = await axios.post("http://localhost:3000/auth/login", dados);
 
       console.log("Resposta do login:", resposta.data);
       navigate("/admin/" + resposta.data.id);
