@@ -1,129 +1,105 @@
-import React, { useState, useEffect } from "react";
+import { Table, message } from "antd";
 import axios from "axios";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { Table, Space, Button, Modal, Form, Input, message } from "antd";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+
+//import css
+import "../css/TelaPerfil.css";
 
 const TelaUserPerfil = () => {
   const [usuarios, setUsuarios] = useState([]);
-  const [link, setLink] = useState([{}]);
-
-  const navigate = useNavigate();
-
+  const [link, setLink] = useState([]);
   const { user } = useParams();
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchUserId = async () => {
       try {
-        const response = await axios.get(
-          // `https://fs01backend.onrender.com/${user}`
-          `http://localhost:3000/links/${user}`
+        const userResponse = await axios.get(`http://localhost:3000/${user}`);
+        const linksUserResponse = await axios.get(
+          `http://localhost:3000/links/usuarios/${userResponse.data.id}`
         );
-
-        const respostaLink = await axios.get(
-          // `https://fs01backend.onrender.com/${user}`
-          `http://localhost:3000/links/usuarios/${response.data.id}`
-        );
-
-        console.log(respostaLink.data);
-        const newLink = [respostaLink.data];
-        setLink(newLink);
-        console.log('sss', link[0]);
-        const newItems = [response.data];
-        setUsuarios(newItems);
+        const userDados = {
+          id: userResponse.data.id,
+          nome: userResponse.data.nome,
+          usuario: userResponse.data.usuario,
+          email: userResponse.data.email,
+        };
+        const linkDados = linksUserResponse.data.map((link) => ({
+          id: link.id,
+          titulo: link.titulo,
+          url: link.url,
+        }));
+        setUsuarios([userDados]);
+        setLink(linkDados);
       } catch (error) {
-        console.error("Erro ao obter Nome do usuário.", error);
-
+        console.error("Erro ao obter ID do usuário logado:", error);
+        console.log("deu erro", usuarios);
         message.error(
-          "Erro ao obter Nome do usuário. Por favor, tente novamente."
+          "Erro ao obter ID do usuário logado. Por favor, tente novamente."
         );
       }
     };
 
-    fetchUser();
+    fetchUserId();
   }, []);
 
-  const columns = [
+  const columnsUsers = [
     {
-      title: "Nome",
+      title: <strong>Nome</strong>,
       dataIndex: "nome",
       key: "nome",
     },
     {
-      title: "Usuário",
+      title: <strong>Usuário</strong>,
       dataIndex: "usuario",
       key: "usuario",
     },
     {
-      title: "Email",
+      title: <strong>Email</strong>,
       dataIndex: "email",
       key: "email",
-    },
-    {
-      title: "Botão",
-      key: "botao",
-      render: (text, record) => (
-        <Space size="middle">
-          <Link to={`/${record.usuario}`}>
-            <Button type="primary">Cadastrar Link</Button>
-          </Link>
-        </Space>
-      ),
     },
   ];
 
   const columnsLink = [
     {
-      title: "Link",
+      title: <strong>Link</strong>,
       dataIndex: "url",
       key: "link",
+      render: (text) => (
+        <a href={text} target="_blank">
+          {text}
+        </a>
+      ),
     },
     {
-      title: "Titulo",
+      title: <strong>Titulo</strong>,
       dataIndex: "titulo",
       key: "titulo",
-    },
-    {
-      title: "Botão",
-      key: "botao",
-      render: (text, record) => (
-        <Space size="middle">
-          <Link to={`/${record.usuario}`}>
-            <Button type="primary">Editar</Button>
-          </Link>
-        </Space>
-      ),
     },
   ];
 
   return (
     <>
-      <div>
-        <h2>Perfil do Usuário {user}</h2>
-      </div>
-      <div>
-        <Table
-          columns={columns}
-          dataSource={usuarios}
-          pagination={false}
-          rowKey="id"
-        />
-      </div>
-      <div>
-        <Table
-          columns={columnsLink}
-          dataSource={link[0]}
-          pagination={false}
-          rowKey="id"
-        />
-      </div>
-      <div>
-        <Button
-          className="register-button"
-          type="danger"
-          onClick={() => navigate("/")}
+      <div className="containerGeralPerfil">
+        <div
+          className="containerPerfil"
+          style={{ width: "80%", margin: "auto", marginTop: "50px" }}
         >
-          Voltar
-        </Button>
+          <h2 className="title">Perfil do Usuário {user}</h2>
+          <Table
+            columns={columnsUsers}
+            dataSource={usuarios}
+            pagination={false}
+            rowKey="id"
+          />
+          <Table
+            columns={columnsLink}
+            dataSource={link}
+            pagination={false}
+            rowKey="id"
+          />
+        </div>
       </div>
     </>
   );
