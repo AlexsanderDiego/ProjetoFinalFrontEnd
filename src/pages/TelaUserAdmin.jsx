@@ -3,17 +3,21 @@ import axios from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Table, Space, Button, Modal, Form, Input, message } from "antd";
 
+//import css
+import "../css/TelaUserAdmin.css";
+
 const TelaUserAdmin = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [link, setLink] = useState([]);
   const [modalVisibleUser, setModalVisibleUser] = useState(false);
   const [modalVisibleLink, setModalVisibleLink] = useState(false);
+  const [modalVisibleLinkCriar, setModalVisibleLinkCriar] = useState(false);
   const [editandoUsuario, setEditandoUsuario] = useState({});
   const [editandoLink, setEditandoLink] = useState({});
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const idUser = useParams();
-  
+
   useEffect(() => {
     const fetchUserId = async () => {
       try {
@@ -49,7 +53,7 @@ const TelaUserAdmin = () => {
   }, []);
 
   //coluna tabela usuario
-  const columns = [
+  const columnsUsers = [
     {
       title: "Nome",
       dataIndex: "nome",
@@ -66,11 +70,6 @@ const TelaUserAdmin = () => {
       key: "email",
     },
     {
-      title: "Links",
-      dataIndex: "links",
-      key: "links",
-    },
-    {
       title: "Ações",
       key: "acoes",
       render: (text, record) => (
@@ -81,7 +80,7 @@ const TelaUserAdmin = () => {
           <Button type="danger" onClick={() => handleExcluir(record.id)}>
             Excluir
           </Button>
-          <Button type="primary" onClick={() => setModalVisibleLink(true)}>
+          <Button type="primary" onClick={() => setModalVisibleLinkCriar(true)}>
             Criar Link
           </Button>
           <Link to={"/" + usuarios[0]["usuario"]}>
@@ -186,7 +185,6 @@ const TelaUserAdmin = () => {
           }
 
           setModalVisibleUser(false);
-          message.success("Dado editado com sucesso!");
         };
         editaUsuario();
       })
@@ -230,7 +228,7 @@ const TelaUserAdmin = () => {
             alert("Erro ao criar link. Por favor, tente novamente.");
           }
 
-          setModalVisibleLink(false);
+          setModalVisibleLinkCriar(false);
         };
         criarLink();
       })
@@ -239,9 +237,9 @@ const TelaUserAdmin = () => {
       });
   };
 
-  //cancelar edição link
+  //cancelar criação link
   const handleCancelarCriarLink = () => {
-    setModalVisibleLink(false);
+    setModalVisibleLinkCriar(false);
   };
 
   //excuir link
@@ -250,9 +248,7 @@ const TelaUserAdmin = () => {
       try {
         const confirma = confirm("Deseja apagar link?");
         if (confirma) {
-          await axios.delete(
-            `http://localhost:3000/apagarlink/${linkId}`
-          );
+          await axios.delete(`http://localhost:3000/apagarlink/${linkId}`);
           alert("Link excluido com sucesso");
           const linksUserResponse = await axios.get(
             `http://localhost:3000/links/usuarios/${idUser.id}`
@@ -308,13 +304,10 @@ const TelaUserAdmin = () => {
           } catch (error) {
             console.error("Erro na requisição:", error);
 
-            alert(
-              "Erro ao editar link. Por favor, tente novamente."
-            );
+            alert("Erro ao editar link. Por favor, tente novamente.");
           }
 
           setModalVisibleLink(false);
-          message.success("Link editado com sucesso!");
         };
         editarLink();
       })
@@ -329,21 +322,22 @@ const TelaUserAdmin = () => {
     form.resetFields();
     setModalVisibleLink(false);
   };
-  //
-  // form.setFieldsValue(editandoLink);
-
 
   return (
     <>
-      <div style={{ width: "80%", margin: "auto", marginTop: "50px" }}>
-        <h2>Detalhes do usuário</h2>
+    <div className="containerGeralAdmin">
+      <div
+        className="containerAdmin"
+        style={{ width: "80%", margin: "auto", marginTop: "50px" }}
+      >
+        <h2 className="titleAdmin">Detalhes do usuário</h2>
         <Table
           dataSource={usuarios}
-          columns={columns}
+          columns={columnsUsers}
           rowKey="id"
           pagination={false}
         />
-        <h2>Links do usuário</h2>
+        <h2 className="titleAdmin">Links do usuário</h2>
         <Table
           dataSource={link}
           columns={columnsLink}
@@ -361,7 +355,7 @@ const TelaUserAdmin = () => {
 
         <Modal
           title="Criar Link"
-          open={modalVisibleLink}
+          open={modalVisibleLinkCriar}
           onOk={handleCriarLink}
           onCancel={handleCancelarCriarLink}
         >
@@ -385,7 +379,11 @@ const TelaUserAdmin = () => {
             >
               <Input type="URL" />
             </Form.Item>
-            <Form.Item name="usuariosId" label="Usuarios Id" initialValue={idUser.id}>
+            <Form.Item
+              name="usuariosId"
+              label="Usuarios Id"
+              initialValue={idUser.id}
+            >
               <Input readOnly />
             </Form.Item>
           </Form>
@@ -459,6 +457,7 @@ const TelaUserAdmin = () => {
             </Form.Item>
           </Form>
         </Modal>
+      </div>
       </div>
     </>
   );
