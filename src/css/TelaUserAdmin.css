@@ -38,10 +38,12 @@
 }
 
 /* Estilos para o botão de sair */
-.register-button {
-  display: block;
+.register-button-admin {
+  display: flex;
   margin-top: 20px;
   color: white;
+  width: 100%;
+  justify-content: center;
 }
 
 /* Estilos para o container principal */

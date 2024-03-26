@@ -24,7 +24,7 @@
   }
   
   /* Estilos para o título */
-  .title {
+  .title-perfil {
     text-align: center;
     margin-bottom: 20px;
     font-size: 24px;
@@ -32,26 +32,26 @@
   }
   
   /* Estilos para as tabelas */
-  .ant-table {
+  .table-perfil {
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
   }
   
   /* Estilos para os títulos das colunas */
-  .ant-table-thead > tr > th {
+  .table-perfil-thead > tr > th {
     background-color: #f0f0f0;
     font-weight: bold;
     color: #333;
   }
   
   /* Estilos para as linhas da tabela */
-  .ant-table-tbody > tr > td {
+  .table-perfil-tbody > tr > td {
     border-bottom: 1px solid #e0e0e0;
   }
   
   /* Estilos para as células da tabela */
-  .ant-table-cell {
+  .table-perfil-cell {
     padding: 12px 16px;
   }
   

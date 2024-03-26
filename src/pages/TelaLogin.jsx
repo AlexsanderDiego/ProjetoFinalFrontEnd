@@ -17,6 +17,10 @@ function AuthLogin() {
       // const resposta = await axios.post("https://projetofinalbackend-4c4c.onrender.com/auth/login", dados);
       const resposta = await axios.post("http://localhost:3000/auth/login", dados);
 
+      if (resposta.status !== 200) {
+        alert("Erro ao fazer login. Por favor, tente novamente.");
+        return;
+      }
       console.log("Resposta do login:", resposta.data);
       navigate("/admin/" + resposta.data.id);
       alert("Login Autorizado");

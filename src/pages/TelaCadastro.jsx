@@ -36,9 +36,9 @@ function Cadastro() {
 
   return (
     <>
-      <Flex className="register-container">
-        <Form className="register-form" form={form} onFinish={handleSubmit}>
-          <div className="register-form-title">Cadastro</div>
+      <Flex className="register-container-cadastro">
+        <Form className="register-cadastro-form" form={form} onFinish={handleSubmit}>
+          <div className="register-cadastro-form-title">Cadastro</div>
           <Row>
             <Col>
               <Form.Item
@@ -92,7 +92,7 @@ function Cadastro() {
             <Col>
               <Form.Item>
                 <Button
-                  className="register-button"
+                  className="register-cadastro-button"
                   type="primary"
                   htmlType="submit"
                 >
@@ -101,7 +101,7 @@ function Cadastro() {
               </Form.Item>
               <Form.Item>
                 <Link to="/">
-                  <Button className="register-button" type="danger">
+                  <Button className="register-button1" type="danger">
                     Voltar
                   </Button>
                 </Link>

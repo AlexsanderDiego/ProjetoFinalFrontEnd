@@ -86,8 +86,9 @@ const TelaUserPerfil = () => {
           className="containerPerfil"
           style={{ width: "80%", margin: "auto", marginTop: "50px" }}
         >
-          <h2 className="title">Perfil do Usuário {user}</h2>
+          <h2 className="title-perfil">Perfil do Usuário {user}</h2>
           <Table
+            className="table-perfil"
             columns={columnsUsers}
             dataSource={usuarios}
             pagination={false}

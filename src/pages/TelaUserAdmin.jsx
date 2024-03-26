@@ -143,6 +143,7 @@ const TelaUserAdmin = () => {
   //editar usuario
   const handleEditar = (usuario) => {
     setEditandoUsuario(usuario);
+    console.log("editandoUsuario", usuario);
     setModalVisibleUser(true);
   };
 
@@ -346,7 +347,7 @@ const TelaUserAdmin = () => {
         />
         <br />
         <Button
-          className="register-button"
+          className="register-button-admin"
           type="danger"
           onClick={() => navigate("/")}
         >
@@ -454,6 +455,13 @@ const TelaUserAdmin = () => {
               rules={[{ required: true }]}
             >
               <Input />
+            </Form.Item>
+            <Form.Item
+              name="senha"
+              label="Senha"
+              rules={[{ required: true }]}
+            >
+              <Input.Password />
             </Form.Item>
           </Form>
         </Modal>
