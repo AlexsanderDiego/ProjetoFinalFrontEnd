@@ -22,10 +22,12 @@ const TelaUserAdmin = () => {
     const fetchUserId = async () => {
       try {
         const userResponse = await axios.get(
-          `http://localhost:3000/links/${idUser.id}`
+          // `http://localhost:3000/links/${idUser.id}`
+          `https://projetofinalbackend-4c4c.onrender.com/links/${idUser.id}`
         );
         const linksUserResponse = await axios.get(
-          `http://localhost:3000/links/usuarios/${idUser.id}`
+          // `http://localhost:3000/links/usuarios/${idUser.id}`
+          `https://projetofinalbackend-4c4c.onrender.com/links/usuarios/${idUser.id}`
         );
         const userDados = {
           id: userResponse.data.id,
@@ -127,7 +129,8 @@ const TelaUserAdmin = () => {
         if (confirma) {
           await axios.delete(
             // `https://fs01backend.onrender.com/apagarusuarios/${usuarioId}`
-            `http://localhost:3000/apagarusuario/${usuarioId}`
+            // `http://localhost:3000/apagarusuario/${usuarioId}`
+            `https://projetofinalbackend-4c4c.onrender.com/apagarusuario/${usuarioId}`
           );
           alert("Usuario excluido com sucesso");
           navigate("/");
@@ -156,7 +159,8 @@ const TelaUserAdmin = () => {
           try {
             const resposta = await axios.put(
               // `https://fs01backend.onrender.com/usuarios/${editandoUsuario.id}`,
-              `http://localhost:3000/atualizarusuarios/${editandoUsuario.id}`,
+              // `http://localhost:3000/atualizarusuarios/${editandoUsuario.id}`,
+              `https://projetofinalbackend-4c4c.onrender.com/atualizarusuarios/${editandoUsuario.id}`,
               values
             );
 
@@ -165,7 +169,8 @@ const TelaUserAdmin = () => {
             // Atualiza a lista de usuários após a edição
             const response = await axios.get(
               // `https://fs01backend.onrender.com/usuarios/${idUser.id}`
-              `http://localhost:3000/usuarios/${idUser.id}`
+              // `http://localhost:3000/usuarios/${idUser.id}`
+              `https://projetofinalbackend-4c4c.onrender.com/usuarios/${idUser.id}`
             );
             // implementar a atualização da lista de usuários
             const usu = {
@@ -207,7 +212,8 @@ const TelaUserAdmin = () => {
         const criarLink = async () => {
           try {
             const resposta = await axios.post(
-              `http://localhost:3000/cadastrarlinks/`,
+              // `http://localhost:3000/cadastrarlinks/`,
+              `https://projetofinalbackend-4c4c.onrender.com/cadastrarlinks/`,
               values
             );
 
@@ -215,7 +221,8 @@ const TelaUserAdmin = () => {
 
             // Atualiza a lista de usuários após a criação do link
             const linksUserResponse = await axios.get(
-              `http://localhost:3000/links/usuarios/${idUser.id}`
+              // `http://localhost:3000/links/usuarios/${idUser.id}`
+              `https://projetofinalbackend-4c4c.onrender.com/links/usuarios/${idUser.id}`
             );
             const linkDados = linksUserResponse.data.map((link) => ({
               id: link.id,
@@ -249,10 +256,14 @@ const TelaUserAdmin = () => {
       try {
         const confirma = confirm("Deseja apagar link?");
         if (confirma) {
-          await axios.delete(`http://localhost:3000/apagarlink/${linkId}`);
+          await axios.delete(
+            // `http://localhost:3000/apagarlink/${linkId}`
+            `https://projetofinalbackend-4c4c.onrender.com/apagarlink/${linkId}`
+            );
           alert("Link excluido com sucesso");
           const linksUserResponse = await axios.get(
-            `http://localhost:3000/links/usuarios/${idUser.id}`
+            // `http://localhost:3000/links/usuarios/${idUser.id}`
+            `https://projetofinalbackend-4c4c.onrender.com/links/usuarios/${idUser.id}`
           );
           const linkDados = linksUserResponse.data.map((link) => ({
             id: link.id,
@@ -285,7 +296,8 @@ const TelaUserAdmin = () => {
         const editarLink = async () => {
           try {
             const resposta = await axios.put(
-              `http://localhost:3000/atualizarlink/${editandoLink.id}`,
+              // `http://localhost:3000/atualizarlink/${editandoLink.id}`,
+              `https://projetofinalbackend-4c4c.onrender.com/atualizarlink/${editandoLink.id}`,
               values
             );
 
@@ -293,7 +305,8 @@ const TelaUserAdmin = () => {
 
             // Atualiza a lista de usuários após a edição
             const linksUserResponse = await axios.get(
-              `http://localhost:3000/links/usuarios/${idUser.id}`
+              // `http://localhost:3000/links/usuarios/${idUser.id}`
+              `https://projetofinalbackend-4c4c.onrender.com/links/usuarios/${idUser.id}`
             );
             const linkDados = linksUserResponse.data.map((link) => ({
               id: link.id,

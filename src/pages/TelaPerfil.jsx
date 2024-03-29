@@ -14,9 +14,13 @@ const TelaUserPerfil = () => {
   useEffect(() => {
     const fetchUserId = async () => {
       try {
-        const userResponse = await axios.get(`http://localhost:3000/${user}`);
+        const userResponse = await axios.get(
+          // `http://localhost:3000/${user}`
+          `https://projetofinalbackend-4c4c.onrender.com/${user}`
+          );
         const linksUserResponse = await axios.get(
-          `http://localhost:3000/links/usuarios/${userResponse.data.id}`
+          // `http://localhost:3000/links/usuarios/${userResponse.data.id}`
+          `https://projetofinalbackend-4c4c.onrender.com/links/usuarios/${userResponse.data.id}`
         );
         const userDados = {
           id: userResponse.data.id,

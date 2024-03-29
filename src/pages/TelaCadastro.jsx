@@ -13,7 +13,8 @@ function Cadastro() {
     try {
       await axios.post(
         // "https://fs01backend.onrender.com/cadastrarusuarios",
-        `http://localhost:3000/cadastrarusuarios/`,
+        `https://projetofinalbackend-4c4c.onrender.com/cadastrarusuarios`,
+        // `http://localhost:3000/cadastrarusuarios/`,
         dados
       );
 

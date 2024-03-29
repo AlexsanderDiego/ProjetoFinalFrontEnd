@@ -12,11 +12,17 @@ const TelaRedefinirSenha = () => {
 
   const handleSubmit = async (values) => {
     // Aqui você pode implementar a lógica para redefinir a senha
-    const respostaUser = await axios.get(`http://localhost:3000/${user}`);
+    const respostaUser = await axios.get(
+    // `http://localhost:3000/${user}`
+      `https://projetofinalbackend-4c4c.onrender.com/${user}`
+      );
     const idUser = Number(respostaUser.data.id);
 
 console.log(idUser)
-    const response = await axios.put(`http://localhost:3000/atualizarsenha/${idUser}`, values);
+    const response = await axios.put(
+      // `http://localhost:3000/atualizarsenha/${idUser}`,
+      `https://projetofinalbackend-4c4c.onrender.com/atualizarsenha/${idUser}`,
+       values);
     if (response.status !== 200) {
       message.error("Erro ao redefinir a senha. Por favor, tente novamente.");
       return;
