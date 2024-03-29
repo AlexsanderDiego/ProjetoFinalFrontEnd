@@ -16,8 +16,8 @@ const TelaUserPerfil = () => {
       try {
         const userResponse = await axios.get(
           // `http://localhost:3000/${user}`
-          `https://projetofinalbackend-4c4c.onrender.com/${user}`
           // `https://projetofinalbackend-4c4c.onrender.com/${user}`
+          `https://projetofinalbackend-4c4c.onrender.com/${user}`
           );
         const linksUserResponse = await axios.get(
           // `http://localhost:3000/links/usuarios/${userResponse.data.id}`
